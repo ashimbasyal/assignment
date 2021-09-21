@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 void main() {
-  runApp(Demo1());
+  runApp(StackEg());
 }
 
-class Demo1 extends StatelessWidget {
-  const Demo1({Key? key}) : super(key: key);
+class StackEg extends StatelessWidget {
+  const StackEg({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,21 +18,31 @@ class Demo1 extends StatelessWidget {
           ),
           body: Center(
             child: Container(
-              width: 150,
               height: 150,
-              color: Colors.grey,
+              width: 150,
+              decoration:
+                  BoxDecoration(shape: BoxShape.circle, color: Colors.amber),
               child: Stack(
+                alignment: Alignment.topRight,
+                // overflow: Overflow.clip,
+                clipBehavior: Clip.none,
+
+                // fit: StackFit.passthrough,
+                // // alignment: Alignment.bottomLeft,
+                textDirection: TextDirection.ltr,
+
                 children: [
-                  Container(
-                    width: 150,
-                    height: 150,
-                    color: Colors.red,
+                  Positioned(
+                    right: -70,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      color: Colors.blue,
+                    ),
                   ),
-                  Container(
-                    width: 100,
-                    height: 100,
-                    color: Colors.blue,
-                  )
+                  Text("ram"),
+
+                  // alignment: Alignment.center,
                 ],
               ),
             ),
