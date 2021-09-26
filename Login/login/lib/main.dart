@@ -1,7 +1,7 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:login/home.dart';
 
 void main() {
   runApp(MyApp());
@@ -32,28 +32,41 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  bool _obscureText = true;
+  final mycontroller = TextEditingController();
+  final mypassword = TextEditingController();
+  // String _email = "";
+  // TextEditingController _password = TextEditingController();
+  final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
+  final RegExp emailRegex = new RegExp(
+      r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,253}[a-zA-Z0-9])?)*$");
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      // appBar: AppBar(
-      //   title: Text(widget.title),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+      ),
       body: Container(
+        color: Colors.white,
         padding: EdgeInsets.all(20),
         height: double.infinity,
         width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              "Welcome Back",
-              style: TextStyle(
-                  fontSize: 24,
-                  fontFamily: 'Roboto',
-                  fontWeight: FontWeight.bold
-                  // fontStyle: FontStyle.italic
-                  ),
+            Padding(
+              padding: const EdgeInsets.all(3.0),
+              child: Text(
+                "Welcome Back",
+                style: TextStyle(
+                    fontSize: 24,
+                    fontFamily: 'Roboto',
+                    fontWeight: FontWeight.bold
+                    // fontStyle: FontStyle.italic
+                    ),
+              ),
             ),
             // Padding(padding: const EdgeInsets.only(top: 20)),
 
@@ -72,47 +85,170 @@ class _MyHomePageState extends State<MyHomePage> {
             Column(
               children: [
                 TextFormField(
+                  autovalidate: true,
+                  validator: (value) {
+                    if (!emailRegex.hasMatch(value!)) {
+                      return 'Please enter valid email';
+                    }
+                    return null;
+                  },
+                  keyboardType: TextInputType.emailAddress,
+
+                  // inputFormatters: [
+                  //   new WhitelistingTextInputFormatter(new RegExp(r'^[0-9]*$')),
+                  //   new LengthLimitingTextInputFormatter(8)
+                  // ],
+
+                  key: _formkey,
+                  controller: mycontroller,
                   decoration: const InputDecoration(
                     suffixIcon: Icon(
                       Icons.email,
                       color: Colors.green,
                     ),
+
                     labelText: 'Email',
+
+                    hintText: "example@gmail.com",
+
                     // icon: const Padding(
                     // padding: const EdgeInsets.only(top: 15.0),
                     //   // child: const Icon(Icons.email),
                     // ),
                   ),
+                  // validator: (value) {
+                  //   if (value!.isEmpty) {
+                  //     return "please enter email";
+                  //   }
+                  // if (!RegExp(r'^[a-z A-z0-9+_.-]+@[a-zA-Z0-9.-]')
+                  //     .hasMatch(value)) {
+                  //   return "please enter valid email";
+                  // }
+                  //   return null;
+                  // },
+                  // onSaved: (String email){
+                  //   _email = email;
+                  // },
+                  // validator: (value) {
+                  //   if (value!.isEmpty ||
+                  //       !RegExp(r'^[a-z A-z]+$').hasMatch(value))
+                  //     return "enter correct email";
+                  //   else {
+                  //     return null;
+                  //   }
+                  // },
                 ),
+
+                // SizedBox(
+                //   width: 20,
+                //   height: 20,
+                //   child: RaisedButton(
+                //     onPressed: () {
+                //       if (_formkey.currentState!.validate()) {
+                //         return;
+                //       } else {
+                //         print("Unsuccessful");
+                //       }
+                //     },
+                //   ),
+                // ),
+
                 // Padding(padding:EdgeInsets.all(8)),
                 Column(
                   children: [
-                    TextFormField(
-                        decoration: const InputDecoration(
-                      border: UnderlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green),
+                    Container(
+                      child: new TextFormField(
+                        autovalidate: true,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter password';
+                          }
+                          return null;
+                        },
+                        controller: mypassword,
+                        autofocus: false,
+                        obscureText: _obscureText,
+                        keyboardType: TextInputType.text,
+                        decoration: InputDecoration(
+                          hintText: 'Password',
+                          // contentPadding:
+                          //     EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                          suffixIcon: GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                _obscureText = !_obscureText;
+                              });
+                            },
+                            child: Icon(
+                              _obscureText
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
+                              semanticLabel: _obscureText
+                                  ? 'show password'
+                                  : 'hide password',
+                              color: Colors.green,
+                            ),
+                          ),
+                        ),
                       ),
 
-                      suffixIcon: Icon(
-                        Icons.lock,
-                        color: Colors.green,
-                      ),
-                      hintText: 'Password',
-                      // labelText: 'Password',
-                      // icon: const Padding(
-                      //   padding: const EdgeInsets.only(top: 20.0),
-                      //   child: const Icon(Icons.lock),
-                    )),
-                    // obscureText: true,
+                      //TextFormField(
+                      // autovalidate: true,
+                      // validator: (value) {
+                      //   if (value!.isEmpty) {
+                      //     return 'Please enter password';
+                      //   }
+                      //   return null;
+                      // },
+                      //   controller: mypassword,
+                      //   obscureText: true,
 
-                    //extra method
-                    // decoration: const InputDecoration(
-                    //   border: UnderlineInputBorder(
-                    //     borderSide: BorderSide(color: Colors.green),
-                    //   ),
-                    //   hintText: 'Password',
-                    //   prefixIcon: Icon(Icons.password),
-                    // ),
+                      //   decoration: InputDecoration(
+                      //     border: UnderlineInputBorder(
+                      //       borderSide: BorderSide(color: Colors.green),
+                      //     ),
+
+                      //     suffixIcon: GestureDetector(
+                      //       onTap: () {
+                      //         setState(() {
+                      //           _obscureText = !_obscureText;
+                      //         });
+                      //       },
+                      //       child: Icon(
+                      //         _obscureText
+                      //             ? Icons.visibility
+                      //             : Icons.visibility_off,
+                      //         semanticLabel: _obscureText
+                      //             ? 'show password'
+                      //             : 'hide password',
+                      //       ),
+                      //     ),
+
+                      //     // suffixIcon: Icon(
+                      //     //   Icons.lock,
+                      //     //   color: Colors.green,
+                      //     // ),
+                      //     hintText: 'Password',
+
+                      //     //   // labelText: 'Password',
+                      //     //   // icon: const Padding(
+                      //     //   //   padding: const EdgeInsets.only(top: 20.0),
+                      //     //   //   child: const Icon(Icons.lock),
+                      //     // )),
+                      //   ),
+
+                      //   // obscureText: true,
+
+                      //   //extra method
+                      //   // decoration: const InputDecoration(
+                      //   //   border: UnderlineInputBorder(
+                      //   //     borderSide: BorderSide(color: Colors.green),
+                      //   //   ),
+                      //   // hintText: 'Password',
+                      //   //   prefixIcon: Icon(Icons.password),
+                      //   // ),
+                      // ),
+                    )
                   ],
                 ),
                 Padding(padding: EdgeInsets.all(15))
@@ -126,7 +262,25 @@ class _MyHomePageState extends State<MyHomePage> {
 
               // alignment: Alignment.center,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  if (mycontroller.text == "example@gmail.com" &&
+                      mypassword.text == "1") {
+                    print("match");
+                  } else {
+                    return print("please type properly");
+                  }
+
+                  // showDialog(
+                  //   context: context,
+                  //   builder: (context) {
+                  //     return AlertDialog(
+                  //       content: Text(mycontroller.text),
+                  //     );
+                  //   },
+                  // );
+                  Navigator.push(
+                      context, MaterialPageRoute(builder: (context) => Home()));
+                },
                 child: Text('Login'),
                 style: ElevatedButton.styleFrom(
                   shape: StadiumBorder(),
